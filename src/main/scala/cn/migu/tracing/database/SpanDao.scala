@@ -1,8 +1,9 @@
 package cn.migu.tracing.database
 
 import java.sql.Timestamp
+import java.util.UUID
 
-import cn.migu.tracing.collector.CollectorSupervisor.Span
+import cn.migu.tracing.collector.Span
 import scalikejdbc._
 
 /**
@@ -26,14 +27,15 @@ object SpanDao extends BaseDao {
   }*/
   def insertOne(span: Span): Unit ={
     NamedDB('tracing) autoCommit { implicit session => {
-      sql"insert into unify.trace_span(trace_id,trace_name,span_id,span_name,span_parentid,type,host,timestamp,annotation) values (${span.traceId}, ${span.traceName}, ${span.spanId},${span.spanName},${span.parentSpanId},${span.reqType},${span.point},${span.timestamp},${span.annotation})".update.apply()
+      val objId = UUID.randomUUID().toString
+      sql"insert into unify.trace_span(obj_id,trace_id,trace_name,span_id,span_name,span_parentid,type,host,timestamp,annotation) values ($objId,${span.traceId}, ${span.traceName}, ${span.spanId},${span.spanName},${span.parentSpanId},${span.reqType},${span.point},${span.timestamp},${span.annotation})".update.apply()
     }
     }
   }
 
   def main(args: Array[String]): Unit = {
 
-    val spanObj = Span("1","11","","zhaocan","my",1 ,"测试",new Timestamp(System.currentTimeMillis()),"127.0.0.1")
+    val spanObj = Span("1","11","","zhaocan","my","1" ,"测试",new Timestamp(System.currentTimeMillis()),"127.0.0.1")
     insertOne(spanObj)
     //queryTest
   }

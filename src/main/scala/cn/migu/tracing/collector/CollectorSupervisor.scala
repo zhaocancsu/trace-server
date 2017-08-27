@@ -1,9 +1,9 @@
 package cn.migu.tracing.collector
 
-import java.sql.Timestamp
 import java.util.concurrent.Executors
 
 import cn.migu.tracing.akkaapp.InstrumentedActor
+import cn.migu.tracing.database.SpanDao
 import cn.migu.tracing.logger.Logging
 import com.typesafe.config.Config
 import org.apache.commons.lang3.exception.ExceptionUtils
@@ -17,12 +17,9 @@ object CollectorSupervisor {
 
   case class Collector(params: Map[String,String])
 
-  case class Span(traceId: String, spanId: String, parentSpanId: String, traceName: String, spanName: String, reqType: Int, annotation: String, timestamp: Timestamp, point: String)
-
   // Errors/Responses
   case object HandlerSucess
 
-  //case class HandlerException(t: Throwable)
 
 }
 
@@ -58,7 +55,12 @@ class CollectorSupervisorActor(config: Config) extends InstrumentedActor with Lo
   private[this] def asynRequest(params: Map[String,String]): Unit = {
 
     val f: Future[String] = Future {
+      println(params)
+      val span = Span(params)
 
+      if(null != span){
+        SpanDao.insertOne(span)
+      }
       "success"
     }
 

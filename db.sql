@@ -1,11 +1,12 @@
 create table trace_span(
-       trace_id varchar2(50) primary key,
+       obj_id varchar2(50) primary key not null,
+       trace_id varchar2(50) not null,
        trace_name varchar2(100),
-       span_id varchar2(50),
-       span_name varchar2(50),
+       span_id varchar2(50) not null,
+       span_name varchar2(50) not null,
        span_parentid varchar2(50),
-       type number(2),
-       host varchar2(20),
-       timestamp timestamp,
+       type varchar2(10) not null,
+       host varchar2(20) not null,
+       timestamp timestamp not null,
        annotation clob
        );
