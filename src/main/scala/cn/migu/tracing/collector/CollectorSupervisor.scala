@@ -27,6 +27,7 @@ class CollectorSupervisorActor(config: Config) extends InstrumentedActor with Lo
 
   import CollectorSupervisor._
 
+  val collectorLogger = LogFactory.getLog("collector")
   val errorLogger = LogFactory.getLog("error")
 
   def wrappedReceive: Receive = {
@@ -55,9 +56,8 @@ class CollectorSupervisorActor(config: Config) extends InstrumentedActor with Lo
   private[this] def asynRequest(params: Map[String,String]): Unit = {
 
     val f: Future[String] = Future {
-      println(params)
       val span = Span(params)
-
+      collectorLogger.info(span)
       if(null != span){
         SpanDao.insertOne(span)
       }
@@ -69,7 +69,7 @@ class CollectorSupervisorActor(config: Config) extends InstrumentedActor with Lo
         //info(s"$key:export game records sucess")
       }
       case Failure(e) => {
-        error(s"failed", e)
+        errorLogger.error("request handler failed", e)
       }
     }
 

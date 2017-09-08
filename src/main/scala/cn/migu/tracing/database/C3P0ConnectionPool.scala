@@ -30,6 +30,17 @@ class C3P0ConnectionPool(
   _dataSource.setInitialPoolSize(settings.initialSize)
   _dataSource.setMaxPoolSize(settings.maxSize)
   _dataSource.setCheckoutTimeout(settings.connectionTimeoutMillis.toInt)
+  _dataSource.setAcquireIncrement(10)
+  _dataSource.setMaxIdleTime(30)
+  _dataSource.setMinPoolSize(settings.initialSize)
+  _dataSource.setAcquireRetryDelay(1000)
+  _dataSource.setAcquireRetryAttempts(60)
+  _dataSource.setBreakAfterAcquireFailure(false)
+  _dataSource.setUnreturnedConnectionTimeout(25)
+  _dataSource.setMaxIdleTimeExcessConnections(20)
+  _dataSource.setMaxConnectionAge(20)
+  _dataSource.setMaxStatements(0)
+
 
   override def dataSource: DataSource = _dataSource
   override def borrow(): Connection = dataSource.getConnection()
@@ -38,6 +49,7 @@ class C3P0ConnectionPool(
   override def maxActive: Int = _dataSource.getMaxPoolSize
   override def maxIdle: Int = _dataSource.getMaxPoolSize
   override def close(): Unit = _dataSource.close()
+
 }
 
 /*implicit val factory = ConnectionPoolFactory

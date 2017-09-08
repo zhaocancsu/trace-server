@@ -14,7 +14,7 @@ trait BaseDao {
   val settings = ConnectionPoolSettings(
     initialSize = 5,
     maxSize = 200,
-    connectionTimeoutMillis = 5000L,
+    connectionTimeoutMillis = 10000L,
     validationQuery = "select 1 from dual")
 
   implicit val factory = C3P0ConnectionPoolFactory
